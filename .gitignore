@@ -1,4 +1,7 @@
 /build/
 *.log
 *.tmp
+*.egg-info/
+
+
 
