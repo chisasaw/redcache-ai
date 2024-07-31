@@ -12,8 +12,15 @@
 
 **Quickstart** 😄
 ---
-**Installation** <br>
+
+**Installation** <br> 
 ---
+**Install redcache-ai as python package**
+```bash
+
+pip install redcache-ai
+
+```
 
 
 **Initialize Redcache-ai** <br>
