@@ -15,7 +15,7 @@
 
 **Installation** <br> 
 ---
-**Install redcache-ai as python package**
+**Install redcache-ai as a python package** 
 ```bash
 
 pip install redcache-ai
