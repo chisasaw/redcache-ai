@@ -1,9 +1,12 @@
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) 
+import json
+import random
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from redcache_ai import RedCache, load_config
-from redcache_ai.storage import DiskStorage, SQLiteStorage 
+from redcache_ai.storage import DiskStorage, SQLiteStorage
 
 """ 
     Prints the menu for the RedCache Framework.
@@ -19,9 +22,10 @@ from redcache_ai.storage import DiskStorage, SQLiteStorage
     6. Delete a memory
     7. Delete all memories for a user
     8. Reset all memories
-    9. Enhance a memory using LLM
-    10. Generate memory summary using LLM
-    11. Exit
+    9. Seed memories for summary
+    10. Enhance a memory using LLM
+    11. Generate memory summary using LLM
+    12. Exit
     
     This function does not take any parameters and does not return any values.
 """
@@ -35,9 +39,11 @@ def print_menu():
     print("6. Delete a memory")
     print("7. Delete all memories for a user")
     print("8. Reset all memories")
-    print("9. Enhance a memory using LLM")
-    print("10. Generate memory summary using LLM")
-    print("11. Exit")
+    print("9. Seed memories for summary")
+    print("10. Enhance a memory using LLM")
+    print("11. Generate memory summary using LLM")
+    print("12. Exit")
+
 
 """
     Initializes a RedCache instance based on the provided storage type and LLM configuration.
@@ -87,6 +93,66 @@ def initialize_redcache(storage_type, use_llm):
     else:
         return RedCache(storage_backend=storage)
 """
+    Loads test memories from a JSON file.
+
+    This function reads the 'test_memories.json' file and returns the list of memories stored in it.
+    The JSON file should have a structure like this:
+    {
+        "memories": [
+            "Memory 1",
+            "Memory 2",
+            ...
+        ]
+    }
+
+    Returns:
+        list: A list of memory strings loaded from the JSON file.
+
+    Raises:
+        FileNotFoundError: If 'test_memories.json' is not found in the current directory.
+        json.JSONDecodeError: If the JSON file is not properly formatted.
+"""
+def load_test_memories():
+    with open('test_memories.json', 'r') as f:
+        data = json.load(f)
+    return data['memories']
+
+"""
+    Generates a random memory from the list of test memories.
+
+    This function loads the test memories using the load_test_memories() function
+    and returns a randomly selected memory from the list.
+
+    Returns:
+        str: A randomly selected memory string.
+"""
+def generate_random_memory():
+    memories = load_test_memories()
+    return random.choice(memories)
+
+"""
+    Pre-seeds the RedCache with a specified number of random memories for a given user.
+
+    This function loads test memories from a JSON file and adds a specified number
+    of randomly selected memories to the RedCache for the given user.
+
+    Args:
+        cache (RedCache): The initialized RedCache instance.
+        user_id (str): The ID of the user to associate the memories with.
+        num_memories (int): The number of memories to generate and store. Defaults to 30.
+
+    Note:
+        If num_memories is greater than the number of available test memories,
+        it will use all available memories without repetition.
+"""
+def pre_seed_memories(cache, user_id, num_memories=30):
+    memories = load_test_memories()
+    total_memories = min(num_memories, len(memories))
+    for memory in random.sample(memories, total_memories):
+        result = cache.add(memory, user_id, "life_event")
+        print(f"Added memory: {result}")
+    print(f"{total_memories} memories have been pre-seeded for user {user_id}")
+"""
     Main function that runs a menu-driven program to interact with a RedCache instance.
     
     This function initializes a RedCache instance based on user input and provides a menu-driven interface to perform various operations on the cache.
@@ -101,22 +167,23 @@ def initialize_redcache(storage_type, use_llm):
     6. Delete a memory: Prompts the user to enter the memory ID and user ID, and deletes the memory from the cache.
     7. Delete all memories for a user: Prompts the user to enter the user ID and deletes all memories associated with that user.
     8. Reset all memories: Prompts the user to confirm the reset and resets all memories in the cache.
-    9. Enhance a memory: Prompts the user to enter the memory text, user ID, and category, and enhances the memory using the LLM.
-    10. Generate memory summary: Prompts the user to enter the user ID and generates a summary of all memories associated with that user.
-    11. Exit: Exits the program.
+    9. Pre-seed memories: Prompts the user to enter the user ID and number of memories to pre-seed for testing purposes.
+    10. Enhance a memory: Prompts the user to enter the memory text, user ID, and category, and enhances the memory using the LLM.
+    11. Generate memory summary: Prompts the user to enter the user ID and generates a summary of all memories associated with that user.
+    12. Exit: Exits the program.
     
     Parameters:
         None
     
     Returns:
         None
-    """
+"""
 def main():
     cache = None
 
     while True:
         print_menu()
-        choice = input("Enter your choice (1-11): ")
+        choice = input("Enter your choice (1-12): ")
 
         if choice == '1':
             storage_type = input("Choose storage type (disk/sqlite): ").lower()
@@ -200,6 +267,14 @@ def main():
                 print("Reset cancelled.")
 
         elif choice == '9':
+            if not cache:
+                print("Please initialize RedCache first.")
+                continue
+            user_id = input("Enter the user ID for pre-seeding memories: ")
+            num_memories = int(input("Enter the number of memories to pre-seed (default 10): ") or "10")
+            pre_seed_memories(cache, user_id, num_memories)
+
+        elif choice == '10':
             if not cache or not cache.llm:
                 print("Please initialize RedCache with an LLM first.")
                 continue
@@ -212,7 +287,7 @@ def main():
             except ValueError as e:
                 print(f"Error: {e}")
 
-        elif choice == '10':
+        elif choice == '11':
             if not cache or not cache.llm:
                 print("Please initialize RedCache with an LLM first.")
                 continue
@@ -223,7 +298,7 @@ def main():
             except ValueError as e:
                 print(f"Error: {e}")
 
-        elif choice == '11':
+        elif choice == '12':
             print("Exiting the program. Goodbye!")
             break
 
