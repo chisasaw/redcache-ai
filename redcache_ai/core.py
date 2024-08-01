@@ -67,7 +67,7 @@ class RedCache:
         llm = None
         if llm_config:
             provider = llm_config.get("provider")
-            if provider == "openai":
+            if provider in ["openai", "local"]:
                 from .llm.openai_llm import OpenAILLM
                 llm = OpenAILLM(llm_config.get("config", {}))
             else:
@@ -308,4 +308,4 @@ class RedCache:
         memories = self.get_all(user_id)
         memory_texts = [memory['text'] for memory in memories]
         prompt = f"Summarize the following memories:\n\n" + "\n".join(memory_texts)
-        return self.llm.generate(prompt) 
+        return self.llm.generate(prompt)

@@ -2,10 +2,8 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) 
 
-from redcache_ai import RedCache, load_config, set_openai_api_key
+from redcache_ai import RedCache, load_config
 from redcache_ai.storage import DiskStorage, SQLiteStorage 
-
-
 
 """ 
     Prints the menu for the RedCache Framework.
@@ -52,7 +50,6 @@ def print_menu():
         RedCache: An instance of the RedCache class initialized with the specified storage backend and LLM configuration (if applicable).
         None: If the storage type is invalid or the LLM provider is unsupported.
 """
-
 def initialize_redcache(storage_type, use_llm):
     if storage_type == "disk":
         storage = DiskStorage()
@@ -63,11 +60,26 @@ def initialize_redcache(storage_type, use_llm):
         storage = DiskStorage()
     
     if use_llm:
-        provider = input("Enter LLM provider (e.g., openai): ")
-        if provider == "openai":
-            api_key = input("Enter your OpenAI API key: ")
-            set_openai_api_key(api_key)
-            config = load_config()
+        provider = input("Enter LLM provider (openai/local): ").lower()
+        if provider in ["openai", "local"]:
+            config = {
+                "llm": {
+                    "provider": provider,
+                    "config": {}
+                }
+            }
+            
+            if provider == "openai":
+                api_key = input("Enter your OpenAI API key: ")
+                config["llm"]["config"]["api_key"] = api_key
+            elif provider == "local":
+                base_url = input("Enter the base URL for your local LLM (default: http://localhost:11434/v1): ") or "http://localhost:11434/v1"
+                api_key = input("Enter the API key for your local LLM (press Enter if not required): ") or "ollama"
+                model = input("Enter the model name (e.g., llama2): ") or "default"
+                config["llm"]["config"]["base_url"] = base_url
+                config["llm"]["config"]["api_key"] = api_key
+                config["llm"]["config"]["model"] = model
+
             return RedCache.from_config(config)
         else:
             print(f"Unsupported LLM provider: {provider}")
