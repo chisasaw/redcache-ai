@@ -9,7 +9,7 @@ from redcache_ai import RedCache, load_config
 from redcache_ai.storage import DiskStorage, SQLiteStorage
 
 """ 
-    Prints the menu for the RedCache Framework.
+    Prints the menu for the RedCache Framework. 
     
     This function displays a menu with options for managing memories in the RedCache system.
     The menu includes the following options:

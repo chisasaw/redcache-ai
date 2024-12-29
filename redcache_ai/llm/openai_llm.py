@@ -4,23 +4,23 @@ from .base import BaseLLM
 
 class OpenAILLM(BaseLLM):
     """
-        Initializes an instance of the OpenAILLM class.
+        Initializes an instance of the OpenAILLM class. 
 
         Args:
             config (dict): A dictionary containing configuration options.
-                - model (str): The model to use for generating text. Defaults to "gpt-3.5-turbo".
+                - model (str): The model to use for generating text. Defaults to "gpt-4o-mini".
                 - temperature (float): The value for the temperature parameter. Defaults to 0.7.
                 - max_tokens (int): The maximum number of tokens to generate. Defaults to 150.
-                - base_url (str): The base URL for the API. Defaults to OpenAI's cloud API.
+                - base_url (str): The base URL for the API. Defaults to OpenAI's cloud API. 
                 - api_key (str): The API key for authentication. If not provided, it's fetched from environment variables.
 
         Raises:
             ValueError: If the API key is not found in the config or environment variables.
     """
     def __init__(self, config):
-        self.model = config.get("model", "gpt-3.5-turbo")
+        self.model = config.get("model", "gpt-4o-mini")
         self.temperature = config.get("temperature", 0.7)
-        self.max_tokens = config.get("max_tokens", 150)
+        self.max_tokens = config.get("max_tokens", 15000)
         self.base_url = config.get("base_url", "https://api.openai.com/v1")
         
         api_key = config.get("api_key") or os.getenv("OPENAI_API_KEY")
