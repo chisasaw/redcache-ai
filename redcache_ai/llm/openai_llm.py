@@ -13,10 +13,10 @@ class OpenAILLM(BaseLLM):
                 - max_tokens (int): The maximum number of tokens to generate. Defaults to 150.
 
         Raises:
-            ValueError: If the OpenAI API key is not found in the environment variables.
+            ValueError: If the OpenAI API key is not found in the environment variables. 
     """
     def __init__(self, config):
-        self.model = config.get("model", "gpt-3.5-turbo")
+        self.model = config.get("model", "gpt-4o-mini")
         self.temperature = config.get("temperature", 0.7)
         self.max_tokens = config.get("max_tokens", 150)
         
