@@ -3,7 +3,7 @@
 [Join the redcache-ai discord server](https://discord.com/channels/1267256745613328487/1267256818439163934) | [Email me](mailto:elementkalunga3@gmail.com)
 
 
-**RedCache-ai: A memory framework for Large Language Models and Agents**
+**RedCache-ai: A memory framework for Large Language Models and Agents** 
 ---
 **What ?** 🤖
 ---
@@ -35,9 +35,9 @@ from redcache_ai import RedCache, load_config, set_openai_api_key
 from redcache_ai.storage import DiskStorage, SQLiteStorage
 
 
-storage = Disktorage()
+storage = DiskStorage()
 ```
-**Option 2: Initialize to sqlite**
+**Option 2: Initialize to sqlite** 
 ```python
 
 storage = SQLiteStorage(db_path='my_cache.db')
