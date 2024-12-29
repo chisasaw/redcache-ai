@@ -12,7 +12,7 @@ import os
       their values are:
       
       - "model": a string representing the LLM model. Currently, the only supported
-        model is "gpt-4".
+        model is "gpt-4". 
       
       - "temperature": a float representing the temperature parameter for the LLM.
         This parameter controls the randomness of the LLM's output.
@@ -26,7 +26,7 @@ def load_config():
         "llm": {
             "provider": "openai",
             "config": {
-                "model": "gpt-4",
+                "model": "gpt-4o-mini",
                 "temperature": 0.2,
                 "max_tokens": 1500,
             }
